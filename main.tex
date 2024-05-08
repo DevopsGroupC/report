@@ -1,0 +1,42 @@
+\documentclass[12pt, a4paper, twocolumn]{article}
+\usepackage{verbatim} 
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{listings}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{newtxtext}
+\usepackage{blindtext}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{biblatex}
+\addbibresource{Bibliography.bib}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=false, % Set to false if you don't want colored links
+    linkcolor=blue,   % Color of links to internal documents
+    filecolor=magenta, % Color of file links
+    urlcolor=cyan     % Color of external links
+}
+
+\setlength{\arrayrulewidth}{0.3mm}
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+
+\begin{document}
+\input{sections/front-page}
+
+% Table of contents might be overkill for a 5 page report.
+%\pagenumbering{roman}
+%\tableofcontents
+%\newpage
+%\pagenumbering{arabic}
+
+\input{sections/systems}
+\input{sections/processes}
+\input{sections/lessons-learned}
+\end{document}
