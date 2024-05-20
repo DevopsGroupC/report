@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper, twocolumn]{article}
+\documentclass[12pt, a4paper]{article}
 \usepackage{verbatim} 
 \usepackage{subfig}
 \usepackage{wrapfig}
@@ -8,10 +8,12 @@
 \usepackage{todonotes}
 \usepackage{newtxtext}
 \usepackage{blindtext}
-
+\usepackage{enumitem}
 \usepackage{graphicx}
+\usepackage{pdflscape} % For landscape pages
+\usepackage{float}     % For ordering images and text accordingly
+\usepackage[colorlinks = true, urlcolor  = blue]{hyperref}
 \graphicspath{ {./images/} }
-
 \usepackage{biblatex}
 \addbibresource{Bibliography.bib}
 
@@ -23,9 +25,12 @@
     urlcolor=cyan     % Color of external links
 }
 
+\setlist[itemize]{itemsep=2pt, parsep=0pt}
 \setlength{\arrayrulewidth}{0.3mm}
 \setlength{\tabcolsep}{10pt}
 \renewcommand{\arraystretch}{1.5}
+
+\setcounter{secnumdepth}{2}
 
 \begin{document}
 \input{sections/front-page}
@@ -37,6 +42,12 @@
 %\pagenumbering{arabic}
 
 \input{sections/systems}
+\newpage
 \input{sections/processes}
+\newpage
+\input{sections/security}
+\newpage
 \input{sections/lessons-learned}
+\newpage
+\input{sections/apendix}
 \end{document}

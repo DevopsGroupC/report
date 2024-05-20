@@ -1,0 +1,56 @@
+\section{Security}
+\subsection{Security assessment}
+\subsubsection{Risk Identification}
+
+We have the following assets:
+\begin{itemize}
+    \item Web application
+    \item Database
+    \item CI/CD
+    \item Image repository
+    \item Container orchestration
+    \item Secrets
+\end{itemize}
+
+\subsubsection{Threat sources}
+
+Web application: Our current web application runs on HTTP, leaking data (especially when signing up) and making our application vulnerable to replay attacks. 
+All dependencies for the application are Microsoft's own packages.
+Messages are rendered in HTML, it is possible that this somehow allows for cross-site scripting (XSS).\\\\
+Database: In the database the username and email is in clear-text, passwords are salted and hashed to defend against rainbow-table attacks.
+The user ID is an integer, incremented on each sign-up, this is not best practice.
+To connect to the database, we use the same user and password for both our staging and production environments.\\\\
+CI/CD: GitHub actions has access to all of our secrets.
+We use the following NPM packages for versioning our releases:
+\begin{itemize}
+    \item "semantic-release-github-actions-tags": "\textasciicircum1.0.3"
+    \item "semantic-release/git": "\textasciicircum8.0.0"
+\end{itemize}
+
+Our images are stored publicly on DockerHub.
+On our staging server, we don’t use tokens for logging into DockerHub, instead the credentials are stored in the environment, in clear text.
+Our codebase is public on GitHub.\\\\
+Other: We have a lot of open ports on our servers, possibly also for our logging endpoint.
+
+\subsubsection{Risk scenarios}
+
+\begin{center}
+\begin{tabular}{ |p{3.5cm}|c|c|c|p{2.5cm}| } 
+ \hline
+ Scenario & Probability & Impact & Risk & Strategy / Action\\ [0.5ex] 
+ \hline
+ An adversary listens to the non-encrypted data sent on our web application. This is possible because we use HTTP and not HTTPS
+ & 5 & 5 & 25 & Get an SSL-certificate and redirect all traffic to HTTPS\\
+\hline
+ An adversary finds an open port on one of our nodes and gains access to our system & 3 & 5 & 15 & Run Nmap, close unused ports\\
+ \hline 
+ An adversary constructs a message that escapes HTML and runs code when rendered (XSS) & 3 & 5 & 15 & Sanitize user input\\
+ \hline
+  An adversary finds our Docker images online & 3 & 1 & 3 & Make image repository private\\ 
+ \hline
+ An adversary hijacks the cookie of a user & 1 & 2 & 2 & Unavoidable\\ 
+ \hline
+\end{tabular}
+\end{center}
+
+\todo{brief description of how we harden the security of our system based on the analysis}\\
