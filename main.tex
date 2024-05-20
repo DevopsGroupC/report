@@ -30,16 +30,17 @@
 \setlength{\tabcolsep}{10pt}
 \renewcommand{\arraystretch}{1.5}
 
-\setcounter{secnumdepth}{2}
+%\setcounter{secnumdepth}{2}
 
 \begin{document}
 \input{sections/front-page}
 
-% Table of contents might be overkill for a 5 page report.
-%\pagenumbering{roman}
-%\tableofcontents
-%\newpage
-%\pagenumbering{arabic}
+\pagenumbering{roman}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
 
 \input{sections/systems}
 \newpage
