@@ -47,12 +47,12 @@ Triggered on pushes to \texttt{main} branch. It uses a base \texttt{release.conf
 \subsubsection{deploy.yml}
 Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the release workflow.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/figures/Deploy.pdf}
-    \caption{Flowchart illustrating the stages of the deploy workflow}
-    \label{fig:deploy.yml}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{images/figures/Deploy.pdf}
+%     \caption{Flowchart illustrating the stages of the deploy workflow}
+%     \label{fig:deploy.yml}
+% \end{figure}
 \todo{picture tomorrow}
 
 \noindent  Tools used in deploy.yml:
