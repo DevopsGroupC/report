@@ -38,7 +38,7 @@ For logging we use Loki, which is inspired by Prometheus and chosen for that sam
 Grafana is used to display Prometheus data as a dashboard, and to query the logs from Loki.
 
 \subsubsection{Containerization and container orchestration}
-The application is built as a Docker image through the CI/CD chain. From there it is deployed to an instance of Docker Swarm, using a compose file that connects our application with a Prometheus container. This setup has 2 replicas running on the swarm \todo{We have 2 replicas running across 5 VMs, why not have more?}\\
+The application is built as a Docker image through the CI/CD chain. From there it is deployed to an instance of Docker Swarm, using a compose file that connects our application with a Prometheus container. This setup has 2 replicas running on the swarm, more could be appliued, to scale the application if there is an increase in requests.\\
 The Grafana server is setup using standard Grafana, Prometheus and Loki images, composed together in a \texttt{docker-compose.yml}.\\\\
 The Docker Swarm is setup with 1 leader node, 2 manager nodes and 1 worker node. We only have a single worker node, as we have hit a max number of VMs, and we want to have both a staging and a production environment. To enable the leader node to crash and its role be taken by another node, it is required to have 2 manager nodes.\\\\
 
