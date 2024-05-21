@@ -1,4 +1,5 @@
-\section{Security Assessment}
+
+Having multiple assets, we have multiple threat sources. We are well aware that the application do lack a lot of security, but since this has not been the main focus of the course, it has not been our highest priority. \newline 
 We have the following assets:
 \begin{itemize}
     \item Web application
@@ -9,7 +10,7 @@ We have the following assets:
     \item Secrets
 \end{itemize}
 
-\subsection{Threat sources}
+\subsubsection{Threat sources}
 
 Web application: Our current web application runs on HTTP, leaking data (especially when signing up) and making our application vulnerable to replay attacks. 
 All dependencies for the application are Microsoft's own packages.
@@ -29,7 +30,7 @@ On our staging server, we don’t use tokens for logging into DockerHub, instead
 Our codebase is public on GitHub.\\\\
 Other: We have a lot of open ports on our servers, possibly also for our logging endpoint.
 
-\subsection{Risk scenarios}
+\subsubsection{Risk scenarios}
 
 \begin{center}
 \begin{tabular}{ |p{3.5cm}|c|c|c|p{2.5cm}| } 

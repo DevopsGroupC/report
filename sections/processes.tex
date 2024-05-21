@@ -1,8 +1,7 @@
 \section{Processes}
 
-\subsection{Interaction as developers}
-% How do you interact as developers?
-% How is the team organized?
+% \subsubsection{Docker Swarm - Csharp-Minitwit application}
+% When deploying a Docker Swarm cluster, a reserved IP is assigned to the manager node. Users will use this IP to send requests to the Csharp-Minitwit application. When receiving a request, the Docker Swarm cluster routes it through its routing mesh to one of the worker nodes running an instance of the Csharp-Minitwit application, which will process the request and serve a response.
 
 \subsection{Tools and stages included in CI/CD pipelines}
 \label{tools-and-stages-ci-cd}
@@ -11,87 +10,116 @@
 Our CI/CD pipelines are implemented using Github Actions. Our workflows are splitted in the following:
 
 \subsubsection{quality.yml}
-Triggered on pull request actions (opened, reopened, edited, synchronize, and ready for review). The main purpose is to run quality checks over the changes existing on the pull request branch.
+Triggered on pull request actions (opened, reopened, edited, synchronize, and ready for review). The main purpose is to run quality checks over the changes existing on the pull request branch. Figure \ref{fig:quality.yml} illustrates the stages of the quality workflow.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/figures/Quality.pdf}
+    \caption{Flowchart illustrating the stages of the quality workflow}
+    \label{fig:quality.yml}
+\end{figure}
+
+\noindent  Tools used in quality.yml:
 
 \begin{itemize}
     \item .NET SDK (for running dotnet commands)
+    \item dotnet format (for automatic formatting)
     \item Hadolint (for Dockerfile linting)
     \item SonarQube (for code quality and security analysis)
 \end{itemize}
 
 \subsubsection{release.yml}
-Triggered on pushes to \texttt{main} branch. It uses a base \texttt{release.config.js} file at the root of the repository and it is meant to automate the generation of releases and its changelogs through the use of conventional commit messages.
+Triggered on pushes to \texttt{main} branch. It uses a base \texttt{release.config.js} file at the root of the repository and it is meant to automate the generation of releases and its changelogs through the use of conventional commit messages. Figure \ref{fig:release.yml} illustrates the stages of the release workflow.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/figures/Release.pdf}
+    \caption{Flowchart illustrating the stages of the release workflow}
+    \label{fig:release.yml}
+\end{figure}
+
+\noindent  Tools used in release.yml:
 \begin{itemize}
     \item Node.js (for running npm and semantic-release)
     \item Semantic Release (for versioning and changelog management)
 \end{itemize}
 
 \subsubsection{deploy.yml}
-Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean.
+Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the release workflow.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/figures/Deploy.pdf}
+    \caption{Flowchart illustrating the stages of the deploy workflow}
+    \label{fig:deploy.yml}
+\end{figure}
+\todo{picture tomorrow}
+
+\noindent  Tools used in deploy.yml:
 \begin{itemize}
     \item Docker (login, build, push actions)
     \item SSH (for deploying to servers)
 \end{itemize}
 
-\subsection{Organization of the repository}
-% Organization of your repositor(ies).
-% That is, either the structure of of mono-repository or organization of artifacts across repositories.
-% In essence, it has to be be clear what is stored where and why.
-The repository is organised in two main folders: csharp-minitwit and infrastructure. The first contains all application specific logic, while the second holds all infrastructure related configuration files.
+% \noindent When developers work on the source code, and merge the new features into the main branch, it triggers a deployment workflow that updates the application's Docker images on Dockerhub. A later step uploads the Terraform state files for infrastructure management, which pulls the updated images and initiates the infrastructure update process, deploying changes to Digital Ocean.
 
-By organising the repository in this manner, there is a clear separation of concerns, making it easier to manage the project. Developers concerning with the development of the application do not need to understand the intricacies of the infrastructure and vice versa. 
+% \subsection{Organization of the repository}
+% % Organization of your repositor(ies).
+% % That is, either the structure of of mono-repository or organization of artifacts across repositories.
+% % In essence, it has to be be clear what is stored where and why.
+% The repository is organised in two main folders: csharp-minitwit and infrastructure. The first contains all application specific logic, while the second holds all infrastructure related configuration files.
 
-\subsubsection{csharp-minitwit}
-Main folders and files explained:
-\begin{itemize}
-    \item Controllers: APIController and HomeController handle all the logic for each endpoint.
-    \item Databases: contains the \texttt{schema.sql} and \texttt{minitwit.db} files used to initialise the database in the development environment.
-    \item Metrics: contain all metrics logic and configuration.
-    \item Middlewares: currently only a CatchAllMiddleware required to catch incoming requests and record metrics.
-    \item Models: these represent the way the data is shaped in the application. %I do not completely understand the division into api and DTOs. We should probably explain why.
-    \item Services: include the business logic and service layer components. ORM logic is reflected under Repositories.
-    \item Views: templates representing the user interface.
-\end{itemize}
+% By organising the repository in this manner, there is a clear separation of concerns, making it easier to manage the project. Developers concerning with the development of the application do not need to understand the intricacies of the infrastructure and vice versa. 
 
-\subsubsection{infrastructure}
-Main folders and files explained:
-\begin{itemize}
-    \item archive
-    \item grafana
-    \item scripts
-    \item ssh\_key
-    \item stack
-\end{itemize}
+% \subsubsection{csharp-minitwit}
+% Main folders and files explained:
+% \begin{itemize}
+%     \item Controllers: APIController and HomeController handle all the logic for each endpoint.
+%     \item Databases: contains the \texttt{schema.sql} and \texttt{minitwit.db} files used to initialise the database in the development environment.
+%     \item Metrics: contain all metrics logic and configuration.
+%     \item Middlewares: currently only a CatchAllMiddleware required to catch incoming requests and record metrics.
+%     \item Models: these represent the way the data is shaped in the application. %I do not completely understand the division into api and DTOs. We should probably explain why.
+%     \item Services: include the business logic and service layer components. ORM logic is reflected under Repositories.
+%     \item Views: templates representing the user interface.
+% \end{itemize}
+
+% \subsubsection{infrastructure}
+% Main folders and files explained:
+% \begin{itemize}
+%     \item archive
+%     \item grafana
+%     \item scripts
+%     \item ssh\_key
+%     \item stack
+% \end{itemize}
     
     
-\subsection{Applied branching strategy}
-We have decided to use Gitflow branching model\cite{nvie2010git}. In this model the repository holds two main branches:
-\begin{itemize}
-    \item \texttt{main}: represents the main branch where the source code of HEAD is always production-ready.
-    \item \texttt{develop}: it serves as an integration branch where source code of HEAD always reflects a state with the latest delivered development changes for the next release.
-\end{itemize}
-Next to these main branches there are some other supporting branches, being \texttt{feature} the most widely used. feature branches are meant to be used to develop new features for future releases. They usually branch off and back to develop.
+% \subsection{Applied branching strategy}
+% We have decided to use Gitflow branching model\cite{nvie2010git}. In this model the repository holds two main branches:
+% \begin{itemize}
+%     \item \texttt{main}: represents the main branch where the source code of HEAD is always production-ready.
+%     \item \texttt{develop}: it serves as an integration branch where source code of HEAD always reflects a state with the latest delivered development changes for the next release.
+% \end{itemize}
+% Next to these main branches there are some other supporting branches, being \texttt{feature} the most widely used. feature branches are meant to be used to develop new features for future releases. They usually branch off and back to develop.
 
-\subsection{Applied development process and tools supporting it}
-% For example, how did you use issues, Kanban boards, etc. to organize open tasks
-To organise the development process and make work visible we decided to capitalise Github's built in Project tab, which provides an adaptable spreadsheet for tracking work, and which also integrates with Issues and Pull Requests. This tool provides a comprehensive visibility to the current state of each ticket and an easy-to-understand interface for developers and stakeholders.
+% \subsection{Applied development process and tools supporting it}
+% % For example, how did you use issues, Kanban boards, etc. to organize open tasks
+% To organise the development process and make work visible we decided to capitalise Github's built in Project tab, which provides an adaptable spreadsheet for tracking work, and which also integrates with Issues and Pull Requests. This tool provides a comprehensive visibility to the current state of each ticket and an easy-to-understand interface for developers and stakeholders.
 
-A new Issue is created to document a new requirement and is automatically shown in the Project board as a "Todo" item. When a team member is assigned to such issue, it is moved into the "In Progress" state. The development phase takes part, and when the issue is closed, it is automatically moved to the "Done" status in the board. Closing an issue as "not planned" takes the ticket to the "Aborted" status.
+% A new Issue is created to document a new requirement and is automatically shown in the Project board as a "Todo" item. When a team member is assigned to such issue, it is moved into the "In Progress" state. The development phase takes part, and when the issue is closed, it is automatically moved to the "Done" status in the board. Closing an issue as "not planned" takes the ticket to the "Aborted" status.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/github-project-tracking.png}
-    \caption{Github's Project tracking tool}
-    \label{fig:github-project-feature}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{images/github-project-tracking.png}
+%     \caption{Github's Project tracking tool}
+%     \label{fig:github-project-feature}
+% \end{figure}
 
-\subsection{Monitoring and logging}
+\subsection{Monitoring}
 % How do you monitor your systems and what precisely do you monitor?
-% What do you log in your systems and how do you aggregate logs?
-Monitoring is done through a self hosted image of Grafana using a Digital Ocean Droplet that receives the metrics data from Prometheus servers attached to the application droplets. Moreover, logging is configured through a log aggregation system called Loki, which acts as a Grafana datasource. These logs are pushed directly to Loki by using Serilog, a logging library for .NET applications.
+Monitoring is conducted using a self-hosted instance of Grafana on a DigitalOcean Droplet. This instance receives metrics data from Prometheus servers attached to the application droplet. When the Csharp-Minitwit application processes a request that involves a metric method, the OpenTelemetry.Exporter.Prometheus.AspNetCore package collects and exposes these metrics on a \textit{/metrics} endpoint. A Prometheus server scrapes this endpoint at regular intervals. Prometheus is then used as a data source for Grafana, allowing us to visualize this information on a dashboard.\newline
 
-\subsubsection{Monitoring the business}
-These metrics are registered by querying the database on some specific indicators, such as:
+Some of the data is also collected by querying the database on some specific indicators, such as:
 \begin{itemize}
     \item Messages registered (application usage)
     \item Users registered (conversion)
@@ -99,6 +127,7 @@ These metrics are registered by querying the database on some specific indicator
 \end{itemize}
 
 \subsubsection{Application monitoring}
+The data is then used together with the build in packages to display, how the application is performing. We have chosen to monitor the following, as seen in Figure \ref{fig:grafana-dashboard}.
 \begin{itemize}
     \item Rate of HTTP requests received per endpoint
     \item Total number of requests (last 24hs)
@@ -107,8 +136,22 @@ These metrics are registered by querying the database on some specific indicator
     \item Top 10 Requested endpoints (API).
 \end{itemize}
 
-\subsection{Application logging}
-The reason why we have chosen Loki as a logging mechanism is due to its inherent simpler architecture. It requires less computational power and memory, this aligns perfectly with our MiniTwit application.
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.9\textwidth]{images/Monitoring-latest.png}
+    \caption{Snapshot of Grafana Monitoring Dashboard}
+    \label{fig:grafana-dashboard}
+\end{figure}
+
+\subsubsection{Infrastructure monitoring}
+Even though we haven't set this monitoring ourselves, Digital Ocean provides some out of the box monitoring for its droplets, such as CPU usage, memory usage, DISK I/O, Disk Usage, Bandwith, etc.
+
+\subsection{Logging}
+% What do you log in your systems and how do you aggregate logs?
+Logging is configured through a log aggregation system called Loki, which acts as a Grafana datasource. These logs are pushed directly to Loki by using Serilog, a logging library for .NET applications. Serilog configures a C\# API that will receive the Csharp-Minitwit application logs and send them in a POST request to Loki's server. The structured representation of these Logs makes it easier to extract information from them at a later point. Loki can then be configured as a data source in Grafana to process and store these logs to be queried from a Dashboard.
+
+We have chosen Loki due to its integration with Grafana and its simpler architecture, which requires less computational power and memory. This aligns perfectly with our Csharp-MiniTwit application. \newline
+
 Below, we present the log events throughout our application:
 \begin{itemize}
     \item Message posting
@@ -124,17 +167,17 @@ Below, we present the log events throughout our application:
     
 \end{itemize}
 
-\subsubsection{Infrastructure monitoring}
-Even though we haven't set this monitoring ourselves, Digital Ocean provides some out of the box monitoring for its droplets, such as CPU usage, memory usage, DISK I/O, Disk Usage, Bandwith, etc.
 \todo{Describe how we aggregate logs}
 
 \subsection{Security assessment}
-Brief results of the security assessment.
-
+\input{sections/security}
 
 \subsection{Scaling and upgrades}
 Because we monitor our system we can see when there would be a need to scale our system up or down. Our strategy for scaling our system is to change the number of nodes in the terraform file minitwit\textunderscore swarm\textunderscore cluster.tf and run the bootstrap.sh script. Because the state of our system is kept in the Spaces Object Storage in DigitalOcean it would allow for a quick scaling of the number of nodes. 
-\todo{Describe our strategy for upgrades}
-%Applied strategy for scaling and load balancing.
-%In essence it has to be clear how code or other artifacts come from idea into the running system and everything that happens on the way.
+
+Currently we do not have an automated process for upgrading the system, this would have to be done automatically. From our experience upgrading the initial python2 application to python3, we know that this is not necessarily easy process, where all dependencies has to be taken into account as well. 
+
 % Applied strategy for scaling and upgrades
+
+\subsection{AI-assistance}
+AI tools have not been abandoned in our development process. The main AI consultancy has been with ChatGPT, which has primarily been used for debugging and providing advice on various issues. However, since our application is unique, the ChatGPT platform has limited resources specific to our application's actual processes. Instead, we found that the documentation for each dependency was more thorough and effective for problem-solving in our specific implementation.
