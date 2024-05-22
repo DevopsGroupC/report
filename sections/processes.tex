@@ -161,18 +161,18 @@ Below, we present the log events throughout our application:
     
 \end{itemize}
 
-Concerning log aggregation, Loki does it in a different way compared to traditional logging systems. To be more precise, Loki adopts a more streamlined approach which entails indexing the labels and metadata from each message. Afterwards, the log message itself is compressed and available for querying in Grafana based on specific labels, time ranges and patterns. In the case of our group, we store it in chunks in a DigitalOcean volume attached to the Grafana droplet associated with our Csharp-Minitwit application.
+% Concerning log aggregation, Loki does it in a different way compared to traditional logging systems. To be more precise, Loki adopts a more streamlined approach which entails indexing the labels and metadata from each message. Afterwards, the log message itself is compressed and available for querying in Grafana based on specific labels, time ranges and patterns. In the case of our group, we store it in chunks in a DigitalOcean volume attached to the Grafana droplet associated with our Csharp-Minitwit application.
 
+Loki uses a streamlined approach for log aggregation by indexing labels and metadata from each message, then compressing the log message itself. This allows for efficient querying in Grafana based on labels, time ranges, and patterns. For our Csharp-Minitwit application, logs are stored in chunks on a DigitalOcean volume attached to the Grafana droplet.
 
 \subsection{Security assessment}
 \input{sections/security}
 
 \subsection{Scaling and upgrades}
-Because we monitor our system we can see when there would be a need to scale our system up or down. Our strategy for scaling our system is to change the number of nodes in the terraform file minitwit\textunderscore swarm\textunderscore cluster.tf and run the bootstrap.sh script. Because the state of our system is kept in the Spaces Object Storage in DigitalOcean it would allow for a quick scaling of the number of nodes. 
+We monitor our system to determine when scaling is needed. To scale, we adjust the number of nodes in the Terraform file minitwit\textunderscore swarm\textunderscore cluster.tf and run the `bootstrap.sh` script. This process is quick due to the state being stored in DigitalOcean Spaces Object Storage.
 
-Currently we do not have an automated process for upgrading the system, this would have to be done automatically. From our experience upgrading the initial python2 application to python3, we know that this is not necessarily easy process, where all dependencies has to be taken into account as well. 
-
+Currently, we lack an automated upgrade process. Based on our experience upgrading from Python 2 to Python 3, we know upgrades are complex and require careful management of dependencies.
 % Applied strategy for scaling and upgrades
 
 \subsection{AI-assistance}
-AI tools have not been abandoned in our development process. The main AI consultancy has been with ChatGPT, which has primarily been used for debugging and providing advice on various issues. However, since our application is unique, the ChatGPT platform has limited resources specific to our application's actual processes. Instead, we found that the documentation for each dependency was more thorough and effective for problem-solving in our specific implementation.
+AI tools have been part of our development process, with ChatGPT mainly used for debugging and advice. However, due to the unique nature of our application, ChatGPT's resources were limited. We found the documentation for each dependency more thorough and effective for addressing our specific implementation needs.

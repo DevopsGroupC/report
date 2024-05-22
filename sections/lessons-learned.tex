@@ -35,10 +35,10 @@ Issue Link:
 \end{figure}
 
 \subsubsection{Grafana and Loki Memory Issues}
-We faced disk space overloading issues on our Grafana server, where Loki was also hosted. Using DigitalOcean's recovery console, we identified and resolved the root cause by executing the command sudo lsof +L1, which showed files deleted but still held open by processes. We terminated these processes using sudo kill -HUP [PID], which released the disk space, as seen in Figure \ref{fig:grafana-memoryleak} and restored server functionality, allowing us to regain access to the Grafana platform and establish SSH connections to the server, and setup the volume correctly. 
+We faced disk space overloading on our Grafana server, where Loki was hosted. Using DigitalOcean's recovery console, we identified files deleted but still held open by processes using `sudo lsof +L1`. Terminating these processes with `sudo kill -HUP [PID]` released the disk space (see Figure \ref{fig:grafana-memoryleak}), restored server functionality, and allowed us to regain access to Grafana and SSH, and correctly set up the volume.
 
-Issue Link:
-\todo{Commit link - Maybe delete this paragraph at put it in next}
+Issue Link: \href{https://github.com/DevopsGroupC/Minitwit/wiki/Week-14}{\color{blue}Link for wiki issue week 14}
+
 
 \begin{figure}[H]
 \centering
@@ -50,10 +50,10 @@ Issue Link:
 
 \subsection{Maintenance}
 \subsubsection{Improper Logging Configuration}
-We faced an issue with improper logging configuration on our server. The logs were incorrectly stored on the disk instead of the attached volume, leading to disk space exhaustion and eventual server shutdowns. Initially, we tried to resolve this by deleting log files every 12 hours using a cronjob. However, this method was flawed as it deleted files still in use by running processes, resulting in a memory leak. The correct approach was to reconfigure the server to store logs on the attached volume and transfer the existing logs from the disk to this volume.
+Due to the flawed configuration of the volume on the Grafana-server we had a disk overload. At first we tried to resolve this by deleting log files every 12 hours using a cronjob. However, this method was flawed as it deleted files still in use by running processes, resulting in a memory leak. The correct approach was to reconfigure the server to store logs on the attached volume and transfer the existing logs from the disk to this volume.
 
-Issue Link:
-\todo{Commit link - rewrite the two latest issues. }
+Issue Link: \href{https://github.com/DevopsGroupC/Minitwit/wiki/Week-14}{\color{blue}Link for wiki issue week 14}
+
 % \subsection{Monitoring - Performance improvements}
 % By analyzing metrics, specifically "average request duration by endpoint", and incorporating research conducted by one of the team members, we successfully reduced latency across our endpoints. This improvement is evident in the screenshot below: 
 % \begin{figure}[H]

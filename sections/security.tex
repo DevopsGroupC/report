@@ -1,5 +1,5 @@
 
-Having multiple assets, we have multiple threat sources. We are well aware that the application do lack a lot of security, but since this has not been the main focus of the course, it has not been our highest priority. \newline 
+Having multiple assets, we have multiple threat sources.\newline 
 We have the following assets:
 \begin{itemize}
     \item Web application
@@ -12,23 +12,18 @@ We have the following assets:
 
 \subsubsection{Threat sources}
 
-Web application: Our current web application runs on HTTP, leaking data (especially when signing up) and making our application vulnerable to replay attacks. 
-All dependencies for the application are Microsoft's own packages.
-Messages are rendered in HTML, it is possible that this somehow allows for cross-site scripting (XSS).\\\\
-Database: In the database the username and email is in clear-text, passwords are salted and hashed to defend against rainbow-table attacks.
-The user ID is an integer, incremented on each sign-up, this is not best practice.
-To connect to the database, we use the same user and password for both our staging and production environments.\\\\
-CI/CD: GitHub actions has access to all of our secrets.
-We use the following NPM packages for versioning our releases:
+Web application: Runs on HTTP, making it vulnerable to data leaks and replay attacks. Possible XSS vulnerabilities due to HTML rendering.\\\\
+Database: Usernames and emails are stored in clear-text; passwords are salted and hashed, to defend against rainbow-table attacks.
+User IDs increment sequentially, which is not best practice.The same database credentials are used for both staging and production.\\\\
+CI/CD: GitHub actions has access to all secrets.
+We use the following NPM packages for release versioning:
 \begin{itemize}
     \item "semantic-release-github-actions-tags": "\textasciicircum1.0.3"
     \item "semantic-release/git": "\textasciicircum8.0.0"
 \end{itemize}
 
-Our images are stored publicly on DockerHub.
-On our staging server, we don’t use tokens for logging into DockerHub, instead the credentials are stored in the environment, in clear text.
-Our codebase is public on GitHub.\\\\
-Other: We have a lot of open ports on our servers, possibly also for our logging endpoint.
+Images are publicly stored on DockerHub, with clear-text credentials on the staging server. The codebase is public on GitHub.\\\\
+Other: Multiple open ports on servers, potentially including logging endpoints.
 
 \subsubsection{Risk scenarios}
 
@@ -51,4 +46,5 @@ Other: We have a lot of open ports on our servers, possibly also for our logging
 \end{tabular}
 \end{center}
 
-\todo{brief description of how we harden the security of our system based on the analysis}
+
+\noindent We have not had time to harden our system, due to our focus primarily being on making the infrastructure. 
