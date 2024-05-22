@@ -161,8 +161,7 @@ Below, we present the log events throughout our application:
     
 \end{itemize}
 
-\todo{Describe how we aggregate logs}
-
+Concerning log aggregation, Loki does it in a different way compared to traditional logging systems. To be more precise, Loki adopts a more streamlined approach which entails indexing the labels and metadata from each message. Afterwards, the log message itself is compressed and available for querying in Grafana based on specific labels, time ranges and patterns. In the case of our group, we store it in chunks in a DigitalOcean volume attached to the Grafana droplet associated with our Csharp-Minitwit application.
 
 
 \subsection{Security assessment}
