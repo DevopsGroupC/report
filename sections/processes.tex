@@ -149,8 +149,6 @@ Even though we haven't set this monitoring ourselves, Digital Ocean provides som
 % What do you log in your systems and how do you aggregate logs?
 Logging is configured through a log aggregation system called Loki, which acts as a Grafana datasource. These logs are pushed directly to Loki by using Serilog, a logging library for .NET applications. Serilog configures a C\# API that will receive the Csharp-Minitwit application logs and send them in a POST request to Loki's server. The structured representation of these Logs makes it easier to extract information from them at a later point. Loki can then be configured as a data source in Grafana to process and store these logs to be queried from a Dashboard.
 
-We have chosen Loki due to its integration with Grafana and its simpler architecture, which requires less computational power and memory. This aligns perfectly with our Csharp-MiniTwit application. \newline
-
 \noindent Below, we present the log events throughout our application:
 \begin{itemize}
     \item Message posting

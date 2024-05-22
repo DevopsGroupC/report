@@ -70,55 +70,59 @@ Dependencies are handled using dotnet's package manager, NuGet:
 A quick overview of the technologies used:
 \begin{itemize}
     \item \textbf{GitHub}: Code repository, versioning and project management.
+    \item \textbf{Github Actions}: CI/CD service, deploying code. 
     \item \textbf{SonarCloud}: ensuring quality in the code.
     \item \textbf{CodeClimate}: Quality analysis.
-    \item \textbf{dotnet format}: Automatic formatting.
-    \item \textbf{HadoLint}: Linting Docker file.
+    \item \textbf{dotnet format}: automatic formatting.
+    \item \textbf{HadoLint}: linting Docker file.
     \item \textbf{Digital Ocean}: hosting of virtual servers, databases and volumes.
     \item \textbf{Terraform}: provisioning and management of infrastructure on Digital Ocean.
     \item \textbf{Docker}: containerization of the application for deployment.
+    \item \textbf{DockerHub}: for storing our docker Images. 
+    \item \textbf{DockerSwarm}: for clustering and orchestration 
     \item \textbf{Prometheus}: monitoring system and time series database that collects metrics.
     \item \textbf{Loki}: log aggregation system integrated with Grafana for viewing logs.
     \item \textbf{Grafana}: visualization of metrics and logs.
+    \item \textbf{Vagrant}: initially used for provisioning. 
 \end{itemize} 
-\subsubsection{Versioning and CI/CD}
-% The application is versioned, tested, quality assured and deployed using
-% GitHub. Our group has been following the Gitflow workflow to avoid merge conflicts, and ensure tractability. Gitflow also allows us to have a 'develop' and a 'main' branch, enabling us to easily set up a staging server, for integration testing.
 
-% Our GitHub repository is also used for project management, creating issues and documentation. Deploying our application to our servers is done using GitHub actions, creating Docker images and pushing them to the relevant environment. GitHub actions also runs unit tests, formats our source code using 'dotnet format' and analyzes it using SonarCloud and CodeClimate.\\\\
+\newpage
+
+\subsubsection{Github}
+The application is versioned, tested, quality assured and deployed using GitHub. Our group has been following the Gitflow workflow to avoid merge conflicts, and ensure tractability. Gitflow also allows us to have a 'develop' and a 'main' branch, enabling us to easily set up a staging server, for integration testing.
+
+Our GitHub repository is also used for project management, creating issues and documentation.
+
+Deploying our application to our servers is done using GitHub Actions, creating Docker images and pushing them to the relevant environment. GitHub actions also runs unit tests, formats our source code using 'dotnet format' and analyzes it using SonarCloud and CodeClimate.
+
+GitHub was chosen because all members of the group was familiar with it. Furthermore, we chose GitHub actions for the CI/CD service, because it works well when our code repositories are already on GitHub. 
 % GitLab would have been a good alternative, however the whole group already have GitHub accounts and use it for personal projects — GitLab supports all the same features but is known for having a stronger focus on DevOps and CI/CD\cite{gitlabvsgithub}. GitLab allows for free self-hosting. 
 
-Our CI/CD pipeline uses GitHub for versioning, issue tracking, and project management. GitHub Actions automate deployments, run unit tests, format code with 'dotnet format', and analyze it with SonarCloud and CodeClimate. We use Gitflow workflow for branch management, supporting staging and production environments.
+\subsubsection{DigitalOcean}
+We have chosen DigitalOcean as our cloud provider, running our application on provisioned virtual machines that we manage our selves. DigitalOcean has been chosen for the sole reason that they offered \$200 in credits for students — enough for the entire project.
+%Since we are not using managed application services, pretty much any cloud provider would suit our needs. Had we gone with managed services, Azure would have been a good alternative due to its integrations for ASP.Net.
 
-\subsubsection{Cloud provider}
-% We have chosen DigitalOcean as our cloud provider, running our application on provisioned virtual machines that we manage our selves. DigitalOcean has been chosen for the sole reason that they offered \$200 in credits for students — enough for the entire project.\newline 
-% Since we are not using managed application services, pretty much any cloud provider would suit our needs. Had we gone with managed services, Azure would have been a good alternative due to its integrations for ASP.Net.
+\subsubsection{PostgreSQL}
+As mentioned, the application uses a PostgreSQL database. We have opted to go with a managed database, for simplicity and to delegate reliability issues to DigitalOcean. A single vertically scaled database will be able to handle many concurrent users. If we needed to scale up substantially, we would likely have to switch to a specialized distributed database system like Kafka, which the real X uses\cite{kafka}.
 
-DigitalOcean hosts our virtual machines, chosen for its \$200 credits for students. Any cloud provider could suffice as we manage our VMs independently.
+\subsubsection{Terraform}
+For provisioning we use Terraform, which has been chosen specifically for it being declarative. The Terraform scripts are run using the 'bootstrap.sh' script, which takes a single parameter; 'production' or 'staging'. This in turn provisions our entire system (except the database) and pushes the corresponding docker image to the Docker Swarm. Terraform integrates well with Docker Swarm, has great scalability and automation capabilities. All of this makes it more suitable for our project as it evolved, compared to vagrant, that we had used under the development of the application. 
 
-\subsubsection{Provisioning}
-% For provisioning we use Terraform, which has been chosen specifically for it being declarative. The Terraform scripts are run using the 'bootstrap.sh' script, which takes a single parameter; 'production' or 'staging'. This in turn provisions our entire system (except the database) and pushes the corresponding docker image to the Docker Swarm.
+\subsubsection{Docker and Docker Swarm}
 
-Terraform, chosen for its declarative nature, provisions our infrastructure. The 'bootstrap.sh' script, which takes a single parameter; 'production' or 'staging'. This in turn provisions our entire system (except the database) and pushes the corresponding docker image to the Docker Swarm.
+% The application is built as a Docker image through the CI/CD chain. From there it is deployed to an instance of Docker Swarm, using a compose file that connects our application with a Prometheus container. This setup has 2 replicas running on the swarm, more could be applied, to scale the application if there is an increase in requests.
+%The Grafana server is setup using standard Grafana, Prometheus and Loki images, composed together in a \texttt{docker-compose.yml}.\\\\
+%The Docker Swarm is setup with 1 leader node, 2 manager nodes and 1 worker node. We only have a single worker node, as we have hit a max number of VMs, and we want to have both a staging and a production environment. To enable the leader node to crash and its role be taken by another node, it is required to have 2 manager nodes.\\\\
+The application is containerized with Docker and deployed using Docker Swarm, set up with 1 leader node, 2 manager nodes, and 1 worker node. 
+Since we initially containerized our system through Docker, it was the natural choice to use a Docker Swarm for distributing our system. We initially chose Docker because it was presented in class, moreover it is a popular and well documented tool for containerizing systems.
 
-\subsubsection{Database}
-As mentioned, the application uses a PostgreSQL database. We have opted to go with a managed database, for simplicity and to delegate reliability issues to DigitalOcean. A single vertically scaled database will be able to handle many concurrent users. If we needed to scale up substantiably, we would likely have to switch to a specialized distributed database system like Kafka, which the real X uses\cite{kafka}.
+\subsubsection{Monitoring and logging}
+We use Prometheus for monitoring and DigitalOcean for infrastructure monitoring, it was introduced in exercises, and has been kept since. We use Loki for log aggregation, and Grafana for data visualization. Loki is inspired by Prometheus and chosen for that same reason\cite{Loki}.
 
-% We use a managed PostgreSQL database for simplicity and reliability. For scaling, we would consider a distributed database system like Kafka.
-
-% \subsubsection{Monitoring and logging}
+% We have chosen Loki due to its integration with Grafana and its simpler architecture, which requires less computational power and memory. This aligns perfectly with our Csharp-MiniTwit application. \newline
 % We use Prometheus in a pull-based configuration for business monitoring. This was implemented as part of the exercises and has been kept for that reason. We also use DigitalOcean's website for infrastructure monitoring, displaying CPU, memory and disk usage. We have no alarms / emails set up.\\\\
 % For logging we use Loki, which is inspired by Prometheus and chosen for that same reason\cite{Loki}.\\\\
 % Grafana is used to display Prometheus data as a dashboard, and to query the logs from Loki.
-
-% We use Prometheus for monitoring, DigitalOcean for infrastructure monitoring, it was introduced in exercises, and has been kept since. We have Loki for log aggregation, and Grafana for data visualization. Loki is inspired by Prometheus and chosen for that same reason\cite{Loki}.
-
-\subsubsection{Containerization and container orchestration}
-% The application is built as a Docker image through the CI/CD chain. From there it is deployed to an instance of Docker Swarm, using a compose file that connects our application with a Prometheus container. This setup has 2 replicas running on the swarm, more could be appliued, to scale the application if there is an increase in requests.\\
-% The Grafana server is setup using standard Grafana, Prometheus and Loki images, composed together in a \texttt{docker-compose.yml}.\\\\
-% The Docker Swarm is setup with 1 leader node, 2 manager nodes and 1 worker node. We only have a single worker node, as we have hit a max number of VMs, and we want to have both a staging and a production environment. To enable the leader node to crash and its role be taken by another node, it is required to have 2 manager nodes.\\\\
-
-The application is containerized with Docker and deployed using Docker Swarm, set up with 1 leader node, 2 manager nodes, and 1 worker node. Grafana, Prometheus, and Loki are managed with a \texttt{docker-compose.yml} file.
 
 \subsection{Current state of the systems}
 The application is currently shutdown due to the limited amount of credits at DigitalOcean. 
