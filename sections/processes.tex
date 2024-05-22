@@ -45,9 +45,14 @@ Triggered on pushes to \texttt{main} branch. It uses a base \texttt{release.conf
 \end{itemize}
 
 \subsubsection{deploy.yml}
-Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the release workflow.
+Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the deploy workflow.
 
-\todo{picture tomorrow}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/figures/Deploy.pdf}
+    \caption{Flowchart illustrating the stages of the deploy workflow}
+    \label{fig:deploy.yml}
+\end{figure}
 
 \noindent  Tools used in deploy.yml:
 \begin{itemize}
@@ -113,7 +118,7 @@ Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks 
 % How do you monitor your systems and what precisely do you monitor?
 Monitoring is conducted using a self-hosted instance of Grafana on a DigitalOcean Droplet. This instance receives metrics data from Prometheus servers attached to the application droplet. When the Csharp-Minitwit application processes a request that involves a metric method, the OpenTelemetry.Exporter.Prometheus.AspNetCore package collects and exposes these metrics on a \textit{/metrics} endpoint. A Prometheus server scrapes this endpoint at regular intervals. Prometheus is then used as a data source for Grafana, allowing us to visualize this information on a dashboard.\newline
 
-Some of the data is also collected by querying the database on some specific indicators, such as:
+\noindent Some of the data is also collected by querying the database on some specific indicators, such as:
 \begin{itemize}
     \item Messages registered (application usage)
     \item Users registered (conversion)
@@ -146,7 +151,7 @@ Logging is configured through a log aggregation system called Loki, which acts a
 
 We have chosen Loki due to its integration with Grafana and its simpler architecture, which requires less computational power and memory. This aligns perfectly with our Csharp-MiniTwit application. \newline
 
-Below, we present the log events throughout our application:
+\noindent Below, we present the log events throughout our application:
 \begin{itemize}
     \item Message posting
     \item User logging / Failure logging / Invalid username or password
@@ -163,16 +168,15 @@ Below, we present the log events throughout our application:
 
 % Concerning log aggregation, Loki does it in a different way compared to traditional logging systems. To be more precise, Loki adopts a more streamlined approach which entails indexing the labels and metadata from each message. Afterwards, the log message itself is compressed and available for querying in Grafana based on specific labels, time ranges and patterns. In the case of our group, we store it in chunks in a DigitalOcean volume attached to the Grafana droplet associated with our Csharp-Minitwit application.
 
-Loki uses a streamlined approach for log aggregation by indexing labels and metadata from each message, then compressing the log message itself. This allows for efficient querying in Grafana based on labels, time ranges, and patterns. For our Csharp-Minitwit application, logs are stored in chunks on a DigitalOcean volume attached to the Grafana droplet.
+\noindent Loki uses a streamlined approach for log aggregation by indexing labels and metadata from each message, then compressing the log message itself. This allows for efficient querying in Grafana based on labels, time ranges, and patterns. For our Csharp-Minitwit application, logs are stored in chunks on a DigitalOcean volume attached to the Grafana droplet.
 
 \subsection{Security assessment}
 \input{sections/security}
 
 \subsection{Scaling and upgrades}
-We monitor our system to determine when scaling is needed. To scale, we adjust the number of nodes in the Terraform file minitwit\textunderscore swarm\textunderscore cluster.tf and run the `bootstrap.sh` script. This process is quick due to the state being stored in DigitalOcean Spaces Object Storage.
+We monitor our system to determine when scaling is needed. To scale, we adjust the number of nodes in the Terraform file `minitwit\textunderscore swarm\textunderscore cluster.tf` and run the `bootstrap.sh` script. This process is quick due to the state being stored in DigitalOcean Spaces Object Storage.
 
 Currently, we lack an automated upgrade process. Based on our experience upgrading from Python 2 to Python 3, we know upgrades are complex and require careful management of dependencies.
-% Applied strategy for scaling and upgrades
 
 \subsection{AI-assistance}
 AI tools have been part of our development process, with ChatGPT mainly used for debugging and advice. However, due to the unique nature of our application, ChatGPT's resources were limited. We found the documentation for each dependency more thorough and effective for addressing our specific implementation needs.

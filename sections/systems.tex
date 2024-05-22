@@ -4,29 +4,53 @@
 
 % The application itself requires a database for storing users, messages, followers and metadata. For this we have chosen to connect to a PostgreSQL using Entity Framework Core (an ORM), making subsequent database alterations and migrations easy. In Figure \ref{fig:architecture} we have shown the architecture of the system. 
 
-We have developed 'Csharp-Minitwit' using C\# and the .NET 8.0 runtime, chosen for its strong, statically typed ecosystem and long-term support.\cite{netcoresupport} The application uses the ASP.NET Core framework\cite{aspnetcoreintro2023}, with razor pages for rendering HTML pages, and we are following a Model-View-Controller (MVC) pattern and dependency injection, for easier maintainability and testability. We use PostgreSQL with Entity Framework Core for database management (an ORM), making subsequent database alterations and migrations easy. Below we will show the design and architecture of our system through the module viewpoints presented by Christensen et al.\cite{viewpoint} 
+We have developed 'Csharp-Minitwit' using C\# and the .NET 8.0 runtime, chosen for its strong, statically typed ecosystem and long-term support.\cite{netcoresupport} The application uses the ASP.NET Core framework\cite{aspnetcoreintro2023}, with razor pages for rendering HTML pages, and we are following a Model-View-Controller (MVC) pattern and dependency injection, for easier maintainability and testability. We use PostgreSQL with Entity Framework Core for database management (an ORM), making subsequent database alterations and migrations easy.  
 
-\subsubsection{Module Viewpoint}
-In 'Csharp-Minitwit', the main modules include controllers, Models, Views, Services and Repositories. In Figure X, the dependencies between the modules can be seen. If we look into xxxx, it is apparent that the controller is heavily dependent on other modules, as illustrated in figure xx. 
+In 'Csharp-Minitwit', the main modules include Controllers, Models, Views and Services. They represent underlying files or directories.  In Figure \ref{fig:packageview}, the dependencies between the modules can be seen. The Controller module is the main component, heavily dependent on the other modules. If we decompose the controller module it can be seen that it consists of two underlying packages, corresponding to the two interactions there is with the system, through the apicontroller, fitted to the simulator, or as a client through the homecontroller. How these interactions are, is further elaborated in section \ref{systems:interactions}. 
 
-\todo{Package diagram}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/Packageview.pdf}
+    \caption{Simplified Csharp-Minitwit package view}
+    \label{fig:packageview}
+\end{figure}
 
-\subsubsection{Component \& Connector Viewpoint }
-We will cover the Component \& Connector viewpoint under point 1.3. Elaborating on the interaction of subsystems.  
-
-\subsubsection{Allocation Viewpoint}
-% The purpose of the allocation viewpoint is to show how software elements are mapped to platform elements. 
-%Figure \ref{fig:architecture} shows a full view of our deployment.
 Figure \ref{fig:architecture} shows the infrastructure in our system.
 It can be seen, how he application is hosted on DigitalOcean. We have a Docker Swarm Cluster to orchestrate containers and use Terraform for automating provisioning and configuration of the infrastructure.
-
-\todo{elaborate on the elements. Refer directly to the figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/devops-architecture-architecture_v2.pdf}
     \caption{System Architecture Diagram}
     \label{fig:architecture}
+\end{figure}
+
+
+\subsection{Interactions of subsystems}
+\label{systems:interactions}
+Incoming requests to the application are handled by either the \texttt{APIController} or the \texttt{HomeController}. Both provide similar endpoint logic but are meant to be used by the simulator and regular users respectively. A request's path will match a specific endpoint, prompting the application to perform a corresponding database operation. For instance a POST request to \textit{/login} will invoke the \texttt{GetByUsername} method from the \texttt{userRepository} and request the user information through an SQL SELECT query. The ORM will map the results back to C\# objects, which the controller returns in the HTTP response to the user. 
+Along with this Prometheus and Grafana collect metrics to visualize. Data from logging is aggregated through Loki and Serilog. Below are two sequence diagrams showing how a user and the simulator interacts with our subsystems.\newline
+
+\noindent In Figure \ref{fig:homecontroller} is a sequence diagram showing how a user successfully follow another user and gets a response from the system.\newline
+
+\begin{figure}[H]
+  \begin{center}
+\includegraphics[width=\textwidth]{images/figures/Sequence-client.pdf}
+    \caption{Sequence diagram of a successful follow scenario from user perspective.}
+    \label{fig:homecontroller}
+  \end{center}
+\end{figure}
+
+\newpage
+
+\noindent In Figure \ref{fig:apicontroller} is a sequence diagram illustrating how a request from the simulator is handled in the system.
+
+\begin{figure}[H]
+  \begin{center}
+\includegraphics[width=\textwidth]{images/figures/Sequence-api.pdf}
+    \caption{Sequence diagram of a successful follow scenario from the simulator over the API.}
+    \label{fig:apicontroller}
+  \end{center}
 \end{figure}
 
 \subsection{Dependencies and technologies}
@@ -95,32 +119,6 @@ As mentioned, the application uses a PostgreSQL database. We have opted to go wi
 % The Docker Swarm is setup with 1 leader node, 2 manager nodes and 1 worker node. We only have a single worker node, as we have hit a max number of VMs, and we want to have both a staging and a production environment. To enable the leader node to crash and its role be taken by another node, it is required to have 2 manager nodes.\\\\
 
 The application is containerized with Docker and deployed using Docker Swarm, set up with 1 leader node, 2 manager nodes, and 1 worker node. Grafana, Prometheus, and Loki are managed with a \texttt{docker-compose.yml} file.
-
-
-\subsection{Interactions of subsystems}
-Incoming requests to the application are handled by either the \texttt{APIController} or the \texttt{HomeController}. Both provide similar endpoint logic but are meant to be used by the simulator and regular users respectively. A request's path will match a specific endpoint, prompting the application to perform a corresponding database operation. For instance a POST request to \textit{/login} will invoke the \texttt{GetByUsername} method from the \texttt{userRepository} and request the user information through an SQL SELECT query. The ORM will map the results back to C\# objects, which the controller returns in the HTTP response to the user. 
-Alng with this Prometheus and Grafana collect metrics to visualize. Data from logging is aggregated through Loki and Serilog. Below are two sequence diagrams showing how a user and the simulator interacts with our subsystems.\newline
-
-In Figure \ref{fig:homecontroller} is a sequence diagram showing how a user successfully follow another user and gets a response from the system.\newline
-
-\begin{figure}[H]
-  \begin{center}
-\includegraphics[width=\textwidth]{images/figures/Sequence-client.pdf}
-    \caption{Sequence diagram of a successful follow scenario from user perspective.}
-    \label{fig:homecontroller}
-  \end{center}
-\end{figure}
-
-In Figure \ref{fig:apicontroller} is a sequence diagram illustrating how a request from the simulator is handled in the system.\newline
-
-\begin{figure}[H]
-  \begin{center}
-\includegraphics[width=\textwidth]{images/figures/Sequence-api.pdf}
-    \caption{Sequence diagram of a successful follow scenario from the simulator over the API.}
-    \label{fig:apicontroller}
-  \end{center}
-\end{figure}
-
 
 \subsection{Current state of the systems}
 The application is currently shutdown due to the limited amount of credits at DigitalOcean. 

@@ -1,6 +1,6 @@
 
-Having multiple assets, we have multiple threat sources.\newline 
-We have the following assets:
+\subsubsection {Risk identification}
+We have the following assets: 
 \begin{itemize}
     \item Web application
     \item Database
@@ -12,18 +12,18 @@ We have the following assets:
 
 \subsubsection{Threat sources}
 
-Web application: Runs on HTTP, making it vulnerable to data leaks and replay attacks. Possible XSS vulnerabilities due to HTML rendering.\\\\
-Database: Usernames and emails are stored in clear-text; passwords are salted and hashed, to defend against rainbow-table attacks.
-User IDs increment sequentially, which is not best practice.The same database credentials are used for both staging and production.\\\\
-CI/CD: GitHub actions has access to all secrets.
-We use the following NPM packages for release versioning:
-\begin{itemize}
-    \item "semantic-release-github-actions-tags": "\textasciicircum1.0.3"
-    \item "semantic-release/git": "\textasciicircum8.0.0"
-\end{itemize}
+\textit{Web application:} Runs on HTTP, making it vulnerable to data leaks and replay attacks. Messages are rendered in HTML, it is possible that this somehow allows for cross-site scripting (XSS).\\\\
+\textit{Database:} Usernames and emails are stored in clear-text; passwords are salted and hashed, to defend against rainbow-table attacks.
+User IDs increment sequentially, which is not best practice. To connect to the database, we use the same user and password for both our staging and production environments.\\\\
+\textit{CI/CD:} GitHub actions has access to all secrets. Images are publicly stored on DockerHub. On our staging server, we don’t use tokens for logging into DockerHub, instead the credentials are stored in the environment, in clear text. Our codebase is public on GitHub.\\\\
+% We use the following NPM packages for release versioning:
+% \begin{itemize}
+%     \item "semantic-release-github-actions-tags": "\textasciicircum1.0.3"
+%     \item "semantic-release/git": "\textasciicircum8.0.0"
+% \end{itemize}
+\noindent\textit{Other:} We have multiple open ports on our servers, potentially also for the logging endpoint.\\
 
-Images are publicly stored on DockerHub, with clear-text credentials on the staging server. The codebase is public on GitHub.\\\\
-Other: Multiple open ports on servers, potentially including logging endpoints.
+\noindent Additionally we are using multiple dependencies, which possesses a risk as well, as there could be vulnerabilities in connection to those. 
 
 \subsubsection{Risk scenarios}
 
@@ -46,5 +46,4 @@ Other: Multiple open ports on servers, potentially including logging endpoints.
 \end{tabular}
 \end{center}
 
-
-\noindent We have not had time to harden our system, due to our focus primarily being on making the infrastructure. 
+\noindent Unfortunately, we have not had time to implement the above actions. However, we have during the course made some hardening of our system e.g. made a secure connection to the DB and used GitHub secrets to store enviroment variables.
