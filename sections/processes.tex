@@ -45,7 +45,7 @@ Triggered on pushes to \texttt{main} branch. It uses a base \texttt{release.conf
 \end{itemize}
 
 \subsubsection{deploy.yml}
-Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets,pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the deploy workflow.
+Triggered on pushes to \texttt{develop} and \texttt{main}. It internally checks the targeted environment \texttt{(staging} or \texttt{prod)} retrieving the corresponding secrets, pushing the application image to Dockerhub and deploying to Digital Ocean. Figure \ref{fig:deploy.yml} illustrates the stages of the deploy workflow.
 
 \begin{figure}[H]
     \centering
@@ -147,7 +147,7 @@ Even though we haven't set this monitoring ourselves, Digital Ocean provides som
 
 \subsection{Logging}
 % What do you log in your systems and how do you aggregate logs?
-Logging is configured through a log aggregation system called Loki, which acts as a Grafana datasource. These logs are pushed directly to Loki by using Serilog, a logging library for .NET applications. Serilog configures a C\# API that will receive the Csharp-Minitwit application logs and send them in a POST request to Loki's server. The structured representation of these Logs makes it easier to extract information from them at a later point. Loki can then be configured as a data source in Grafana to process and store these logs to be queried from a Dashboard.
+Logging is configured through a log aggregation system called Loki, which acts as a Grafana datasource. These logs are pushed directly to Loki by using Serilog, a logging library for .NET applications. Serilog configures a C\# API that will receive the Csharp-Minitwit application logs and send them in a POST request to Loki's server. The structured representation of these Logs makes it easier to extract information from them at a later point. Loki can then be configured as a data source in Grafana to process and store these logs to be queried from a Dashboard.\newline
 
 \noindent Below, we present the log events throughout our application:
 \begin{itemize}
@@ -167,6 +167,8 @@ Logging is configured through a log aggregation system called Loki, which acts a
 % Concerning log aggregation, Loki does it in a different way compared to traditional logging systems. To be more precise, Loki adopts a more streamlined approach which entails indexing the labels and metadata from each message. Afterwards, the log message itself is compressed and available for querying in Grafana based on specific labels, time ranges and patterns. In the case of our group, we store it in chunks in a DigitalOcean volume attached to the Grafana droplet associated with our Csharp-Minitwit application.
 
 \noindent Loki uses a streamlined approach for log aggregation by indexing labels and metadata from each message, then compressing the log message itself. This allows for efficient querying in Grafana based on labels, time ranges, and patterns. For our Csharp-Minitwit application, logs are stored in chunks on a DigitalOcean volume attached to the Grafana droplet.
+
+\newpage
 
 \subsection{Security assessment}
 \input{sections/security}

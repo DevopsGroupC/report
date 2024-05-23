@@ -2,7 +2,7 @@
 \subsection{Evolution and Refactoring}
 
 \subsubsection{Changing Infrastructure}
-One notable incident occurred when we mistakenly configured a workflow to delete the database if it already existed. This resulted in the complete loss of our database. To prevent such incidents in the future, we learned the importance of not having destructive operations in our workflows and ensuring that workflows are thoroughly reviewed and tested before deployment.
+One notable incident occurred when we mistakenly configured a workflow to delete the database if it already existed. This resulted in the complete loss of our database and we did not have any backup. We learned the importance of not having destructive operations in our workflows and ensuring that workflows are thoroughly reviewed and tested before deployment and moreover having backups of the database.
 
 \subsubsection{Slow Endpoint - Update Indexing}
 We also encountered performance issues with the /public endpoint of our application, which was notably slow. The root cause was the lack of proper indexing in our database, which had not been configured to align with our application's logic. By adding appropriate indices, we significantly improved the response time of this endpoint.

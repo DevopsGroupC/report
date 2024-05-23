@@ -4,7 +4,7 @@
 
 % The application itself requires a database for storing users, messages, followers and metadata. For this we have chosen to connect to a PostgreSQL using Entity Framework Core (an ORM), making subsequent database alterations and migrations easy. In Figure \ref{fig:architecture} we have shown the architecture of the system. 
 
-We have developed 'Csharp-Minitwit' using C\# and the .NET 8.0 runtime, chosen for its strong, statically typed ecosystem and long-term support.\cite{netcoresupport} The application uses the ASP.NET Core framework\cite{aspnetcoreintro2023}, with razor pages for rendering HTML pages, and we are following a Model-View-Controller (MVC) pattern and dependency injection, for easier maintainability and testability. We use PostgreSQL with Entity Framework Core for database management (an ORM), making subsequent database alterations and migrations easy.  
+We have developed 'Csharp-Minitwit' using C\# and the .NET 8.0 runtime, chosen for its strong, statically typed ecosystem and long-term support.\cite{netcoresupport} The application uses the ASP.NET Core framework\cite{aspnetcoreintro2023}, with razor pages for rendering HTML pages, and we are following a Model-View-Controller (MVC) pattern with dependency injection, for easier maintainability and testability. We use PostgreSQL with Entity Framework Core for database management (an ORM), making subsequent database alterations and migrations easy.  
 
 In 'Csharp-Minitwit', the main modules include Controllers, Models, Views and Services. They represent underlying files or directories.  In Figure \ref{fig:packageview}, the dependencies between the modules can be seen. The Controller module is the main component, heavily dependent on the other modules. If we decompose the controller module it can be seen that it consists of two underlying packages, corresponding to the two interactions there is with the system, through the apicontroller, fitted to the simulator, or as a client through the homecontroller. How these interactions are, is further elaborated in section \ref{systems:interactions}. 
 
@@ -16,7 +16,7 @@ In 'Csharp-Minitwit', the main modules include Controllers, Models, Views and Se
 \end{figure}
 
 \noindent Figure \ref{fig:architecture} shows the infrastructure in our system.
-It can be seen, how he application is hosted on DigitalOcean. We have a Docker Swarm Cluster to orchestrate containers and use Terraform for automating provisioning and configuration of the infrastructure.
+It can be seen, how he application is hosted on DigitalOcean. We have a Docker Swarm to orchestrate containers and use Terraform for automating provisioning and configuration of the infrastructure.
 
 \begin{figure}[H]
     \centering
@@ -71,15 +71,15 @@ A quick overview of the technologies used:
 \begin{itemize}
     \item \textbf{GitHub}: Code repository, versioning and project management.
     \item \textbf{Github Actions}: CI/CD service, deploying code. 
-    \item \textbf{SonarCloud}: ensuring quality in the code.
-    \item \textbf{CodeClimate}: Quality analysis.
-    \item \textbf{dotnet format}: automatic formatting.
+    \item \textbf{SonarCloud}: quality analysis for code.
+    \item \textbf{CodeClimate}: code quality analysis.
+    \item \textbf{dotnet format}: automatic formatting of C\# code.
     \item \textbf{HadoLint}: linting Docker file.
     \item \textbf{Digital Ocean}: hosting of virtual servers, databases and volumes.
     \item \textbf{Terraform}: provisioning and management of infrastructure on Digital Ocean.
     \item \textbf{Docker}: containerization of the application for deployment.
     \item \textbf{DockerHub}: for storing our docker Images. 
-    \item \textbf{DockerSwarm}: for clustering and orchestration 
+    \item \textbf{DockerSwarm}: for clustering and orchestration. 
     \item \textbf{Prometheus}: monitoring system and time series database that collects metrics.
     \item \textbf{Loki}: log aggregation system integrated with Grafana for viewing logs.
     \item \textbf{Grafana}: visualization of metrics and logs.
@@ -102,7 +102,7 @@ GitHub was chosen because all members of the group was familiar with it. Further
 We have chosen DigitalOcean as our cloud provider, running our application on provisioned virtual machines that we manage our selves. DigitalOcean has been chosen for the sole reason that they offered \$200 in credits for students — enough for the entire project.
 %Since we are not using managed application services, pretty much any cloud provider would suit our needs. Had we gone with managed services, Azure would have been a good alternative due to its integrations for ASP.Net.
 
-\subsubsection{PostgreSQL}
+\subsubsection{Database}
 As mentioned, the application uses a PostgreSQL database. We have opted to go with a managed database, for simplicity and to delegate reliability issues to DigitalOcean. A single vertically scaled database will be able to handle many concurrent users. If we needed to scale up substantially, we would likely have to switch to a specialized distributed database system like Kafka, which the real X uses\cite{kafka}.
 
 \subsubsection{Terraform}
@@ -128,7 +128,7 @@ We use Prometheus for monitoring and DigitalOcean for infrastructure monitoring,
 The application is currently shutdown due to the limited amount of credits at DigitalOcean. 
 Before this was done the application, had just been deployed with Terraform, implementing the functionality of the docker-swarm cluster. The application was fully functional on the last days of the simulator running, after this deployment.\newline
 
-We have implemented different tools that can track the quality of our code including CodeClimate and SonarCloud.
+\noindent We have implemented different tools that can track the quality of our code including CodeClimate and SonarCloud.
 
 \begin{figure}[H]
     \centering
@@ -137,13 +137,13 @@ We have implemented different tools that can track the quality of our code inclu
     \label{img:qualitygate}
 \end{figure}
 
-\noindent Figure \ref{img:qualitygate} shows a screenshot of the latest quality gate state in SonarCloud. It displays, that there remains some open issues.  All of them have rating A, meaning that it has the lowest score when it comes to improving the software. \cite{codeclimate} When it comes to technical dept, we currently have 5\%, which improved after implementing the tools, as seen in Figure \ref{img:technical dept}. 
+\noindent Figure \ref{img:qualitygate} shows a screenshot of the latest quality gate state in SonarCloud. It displays, that there remains some open issues.  All of them have rating A, meaning that it has the lowest score when it comes to improving the software. \cite{codeclimate} When it comes to technical debt, we currently have 5\%, as seen in Figure \ref{img:technical dept}. 
+
+%When it comes to technical dept, we currently have 5\%, which improved after implementing the quality tools, as seen in Figure \ref{img:technical dept}. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/Technical Debt.png}
-    \caption{Screenshot of the Technical Dept in our system, from CodeClimate}
+    \caption{Screenshot of the Technical Debt in our system, from CodeClimate}
     \label{img:technical dept}
 \end{figure}
-
-
